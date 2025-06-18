@@ -88,8 +88,6 @@ Metode yang digunakan adalah **Content-Based Filtering** dengan perhitungan cosi
 ## Evaluation
 Metrik yang digunakan adalah **Mean Cosine Similarity**, yaitu rata-rata kemiripan antara produk referensi dan produk-produk yang direkomendasikan berdasarkan representasi fitur.
 
-\(\text{Cosine Similarity} = \frac{A \cdot B}{\|A\| \cdot \|B\|}\)
-
 Cosine similarity mengukur sudut antara dua vektor, dengan nilai 1 menunjukkan kemiripan sempurna, dan 0 berarti tidak ada kemiripan.
 
 Untuk contoh data laptop ke-10, **mean cosine similarity** antara laptop referensi dan lima rekomendasi teratas adalah **1.0000**. Hal ini menunjukkan bahwa sistem berhasil menemukan produk-produk dengan kemiripan fitur yang sangat tinggi.
