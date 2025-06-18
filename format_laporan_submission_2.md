@@ -55,7 +55,11 @@ Dataset yang digunakan berasal dari https://www.kaggle.com/datasets/juanmerinobe
 Visualisasi sederhana dilakukan untuk melihat sebaran data:
 
 - **Distribusi Harga:** mayoritas produk berada pada harga menengah, terdapat outlier harga sangat tinggi.
+![Distribusi Harga](https://github.com/M4tchaa/submission-mlt2/blob/main/EDA1.png)
+
 - **Distribusi RAM:** sebagian besar laptop berada pada rentang RAM standar (8GB - 16GB), dengan sedikit outlier di kapasitas RAM yang tinggi.
+
+![Distribusi Harga](https://github.com/M4tchaa/submission-mlt2/blob/main/EDA2.png)
 
 ## Data Preparation
 Beberapa tahapan preparation yang dilakukan:
