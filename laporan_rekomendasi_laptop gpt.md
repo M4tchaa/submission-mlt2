@@ -1,6 +1,6 @@
-# Laporan Proyek Machine Learning - Arliyandi
+## Laporan Proyek Machine Learning - Arliyandi
 
-## Project Overview
+### Project Overview
 
 Laptop sudah hampir menjadi kebutuhan primer bagi masyarakat saat ini (Hill & Alexander, 2017). Pembelian perangkat laptop sering kali dihadapkan pada banyak pilihan spesifikasi, harga, dan brand. Calon pembeli kerap kesulitan dalam memilih laptop yang paling sesuai dengan kebutuhan spesifik maupun anggaran yang dimiliki (Loeffler, 2024). Oleh karena itu, pengembangan sistem rekomendasi berbasis spesifikasi produk dapat membantu mempermudah proses pengambilan keputusan pembelian laptop.
 
@@ -8,23 +8,25 @@ Source :
 - Hill, N., & Alexander, J. (2017). The handbook of customer satisfaction and loyalty measurement (3rd Edition). Routledge.
 - Loeffler, J. (2024). Chromebooks vs Laptops: which is best for students? Techradar.Com.
 
-## Business Understanding
+### Business Understanding
 
-### Problem Statements
+#### Problem Statements
 
 - Bagaimana membantu pengguna menemukan laptop yang sesuai dengan preferensi spesifikasi mereka?
 - Bagaimana menyusun sistem rekomendasi laptop tanpa menggunakan data historis interaksi pengguna?
 
-### Goals
+#### Goals
 
 - Membangun sistem rekomendasi berbasis content-based filtering yang menyarankan laptop serupa berdasarkan spesifikasi fitur.
 - Memberikan output Top-N rekomendasi laptop secara akurat dan efisien.
 
-### Solution statements
+#### Solution Statements
+
 - Digunakan pendekatan **Content-Based Filtering** karena dataset hanya berisi fitur produk, tanpa interaksi pengguna.
 - Penggunaan cosine similarity antara representasi fitur produk untuk menghitung kemiripan.
 
-## Data Understanding
+### Data Understanding
+
 Dataset yang digunakan berasal dari https://www.kaggle.com/datasets/juanmerinobermejo/laptops-price-dataset . Dataset berisi 2160 baris data laptop, dengan 12 fitur utama:
 
 - **Laptop**: Nama produk (tidak digunakan dalam modeling).
@@ -40,7 +42,7 @@ Dataset yang digunakan berasal dari https://www.kaggle.com/datasets/juanmerinobe
 - **Touch**: Layar sentuh (Yes/No).
 - **Final Price**: Harga akhir (USD).
 
-### Kondisi Data:
+#### Kondisi Data:
 
 - Missing value:
   - Storage type: 42 data
@@ -50,31 +52,23 @@ Dataset yang digunakan berasal dari https://www.kaggle.com/datasets/juanmerinobe
 - RAM bervariasi antara 4GB hingga 128GB.
 - Ukuran layar didominasi pada 15.6 inch.
 
-### Visualisasi (EDA)
+#### Visualisasi (EDA)
 
 Visualisasi sederhana dilakukan untuk melihat sebaran data:
 
 - **Distribusi Harga:** mayoritas produk berada pada harga menengah, terdapat outlier harga sangat tinggi.
 - **Distribusi RAM:** sebagian besar laptop berada pada rentang RAM standar (8GB - 16GB), dengan sedikit outlier di kapasitas RAM yang tinggi.
 
-## Data Preparation
-Beberapa tahapan preparation yang dilakukan:
+### Data Preparation
 
-1. **Menghapus Kolom yang tidak diperlukan**
-   - Beberapa fitur seperti status dan laptop tidak relevan dengan fitur produk terutama pada model nantinya. jadi fitur tersebut dihapus.
-2. **Handling Missing Value**
-   - Storage type -> diisi dengan mode.
-   - GPU -> diisi dengan string 'Unknown'
-   - Screen -> diisi dengan median.
+Langkah-langkah yang dilakukan:
 
-3. **Encoding Kategorikal**
-   - Kolom: `Brand`, `Model`, `CPU`, `Storage type`, `GPU`, dan `Touch` diubah menggunakan Label Encoding
+1. **Menghapus kolom yang tidak dibutuhkan** seperti `Status` dan `Laptop`, karena tidak relevan dengan fitur produk.
+2. **Mengubah variabel kategorikal** menggunakan Label Encoding (`Brand`, `Model`, `CPU`, `Storage type`, `GPU`, `Touch`).
+3. **Normalisasi variabel numerik** menggunakan StandardScaler untuk `RAM`, `Storage`, `Screen`, dan `Final Price` agar bobot kemiripan lebih seimbang.
+4. **Menyusun matriks fitur** untuk digunakan dalam perhitungan cosine similarity.
 
-4. **Scaling Numerik**
-   - Kolom numerik `RAM`, `Storage`, `Screen`, dan `Final Price` distandarisasi menggunakan StandardScaler untuk menyamakan skala perhitungan similarity.
-
-
-## Modeling
+### Modeling
 
 Metode yang digunakan adalah **Content-Based Filtering** dengan perhitungan cosine similarity antar produk. Prosesnya:
 
@@ -82,12 +76,39 @@ Metode yang digunakan adalah **Content-Based Filtering** dengan perhitungan cosi
 - Menghitung cosine similarity antar laptop.
 - Untuk setiap index data, sistem merekomendasikan Top-N (misalnya 5) laptop yang paling mirip (selain dirinya sendiri).
 
-![Output Rekomendasi (contoh data index ke-10)]
+#### Output Rekomendasi (contoh data index ke-10)
 
+| Brand | Model | CPU | RAM   | Storage | Storage type | GPU | Screen | Touch | Final Price |
+| ----- | ----- | --- | ----- | ------- | ------------ | --- | ------ | ----- | ----------- |
+| 13    | 108   | 14  | -0.75 | -0.94   | 0            | 44  | 0.36   | 0     | -1.07       |
+| 13    | 108   | 14  | -0.75 | -0.94   | 0            | 44  | 0.36   | 0     | -1.08       |
+| 13    | 108   | 14  | -0.75 | -0.94   | 0            | 44  | 0.36   | 0     | -0.98       |
+| 13    | 108   | 14  | -1.15 | -0.94   | 0            | 44  | 0.36   | 0     | -1.04       |
+| 13    | 108   | 14  | -1.15 | -1.29   | 0            | 44  | 0.36   | 0     | -1.13       |
 
-## Evaluation
-Metrik yang digunakan adalah Mean Cosine Similarity, yaitu rata-rata kemiripan antara produk referensi dan produk-produk yang direkomendasikan berdasarkan representasi fitur.
+*Catatan: Nilai-nilai seperti RAM, Storage, dan Final Price telah dinormalisasi.*
 
+### Evaluation
 
+Metrik yang digunakan adalah **Mean Cosine Similarity**, yaitu rata-rata kemiripan antara produk referensi dan produk-produk yang direkomendasikan berdasarkan representasi fitur.
 
-**---Ini adalah bagian akhir laporan---**
+#### Formula:
+
+\(\text{Cosine Similarity} = \frac{A \cdot B}{\|A\| \cdot \|B\|}\)
+
+Cosine similarity mengukur sudut antara dua vektor, dengan nilai 1 menunjukkan kemiripan sempurna, dan 0 berarti tidak ada kemiripan.
+
+#### Hasil Evaluasi:
+
+Untuk contoh data laptop ke-10, **mean cosine similarity** antara laptop referensi dan lima rekomendasi teratas adalah **1.0000**. Hal ini menunjukkan bahwa sistem berhasil menemukan produk-produk dengan kemiripan fitur yang sangat tinggi.
+
+Metrik ini digunakan karena pendekatan yang digunakan tidak melibatkan data historis pengguna, sehingga evaluasi dilakukan berdasarkan kesamaan representasi fitur (unsupervised).
+
+---
+
+**Catatan**:
+
+- Dataset tidak cocok untuk Collaborative Filtering karena tidak ada kolom `UserID` atau data historis user-item.
+- Seluruh tahapan sudah dijelaskan sesuai urutan pada notebook.
+- Model berhasil memberikan rekomendasi berdasarkan kesamaan fitur dengan hasil yang sangat konsisten.
+
