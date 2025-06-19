@@ -12,12 +12,12 @@ Source :
 
 ### Problem Statements
 
-- Bagaimana membantu pengguna menemukan laptop yang sesuai dengan preferensi spesifikasi mereka?
+- Bagaimana membantu pengguna menemukan laptop yg sesuai dengan preferensi spesifikasi mereka?
 - Bagaimana menyusun sistem rekomendasi laptop tanpa menggunakan data historis interaksi pengguna?
 
 ### Goals
 
-- Membangun sistem rekomendasi berbasis content-based filtering yang menyarankan laptop serupa berdasarkan spesifikasi fitur.
+- Membangun sistem rekomendasi berbasis content-based filtering yg menyarankan laptop serupa berdasarkan spesifikasi fitur.
 - Memberikan output Top-N rekomendasi laptop secara akurat dan efisien.
 
 ### Solution statements
@@ -25,7 +25,7 @@ Source :
 - Penggunaan cosine similarity antara representasi fitur produk untuk menghitung kemiripan.
 
 ## Data Understanding
-Dataset yang digunakan berasal dari https://www.kaggle.com/datasets/juanmerinobermejo/laptops-price-dataset . Dataset berisi 2160 baris data laptop, dengan 12 fitur utama:
+Dataset yg digunakan berasal dari https://www.kaggle.com/datasets/juanmerinobermejo/laptops-price-dataset . Dataset berisi 2160 baris data laptop, dengan 12 fitur utama:
 
 - **Laptop**: Nama produk (tidak digunakan dalam modeling).
 - **Status**: Status produk (New) - tidak digunakan.
@@ -66,7 +66,7 @@ Jika gambar tidak muncul, [lihat di sini](https://drive.google.com/file/d/1_J_yE
 Jika gambar tidak muncul, [lihat di sini](https://drive.google.com/file/d/1RCs9avFWDgEGDx_JayJzLTRrJvvOiL_N/view?usp=sharing)
 
 ## Data Preparation
-Beberapa tahapan preparation yang dilakukan:
+Beberapa tahapan preparation yg dilakukan:
 
 1. **Menghapus Kolom yang tidak diperlukan**
    - Beberapa fitur seperti status dan laptop tidak relevan dengan fitur produk terutama pada model nantinya. jadi fitur tersebut dihapus.
@@ -96,11 +96,19 @@ Jika gambar tidak muncul, [lihat di sini](https://drive.google.com/file/d/17hRHG
 
 
 ## Evaluation
-Metrik yang digunakan adalah **Pseudo Precision@5**, Mengukur seberapa banyak item rekomendasi yang benar-benar sangat mirip dengan item referensi.  
-Dihitung dengan item referensi (nilai cosine similarity ≥ 0.95) dan Hasil (index ke-10): **1.0000**
 
-Hal ini menunjukkan bahwa:
-- Sistem berhasil menjawab problem statement pertama: **membantu pengguna menemukan laptop sesuai spesifikasi.**
-- Sistem juga sesuai dengan goals, yaitu **menyusun model content-based yang efisien dan akurat** dalam menyarankan laptop sejenis.
+Sistem menggunakan pendekatan **unsupervised Content-Based Filtering**, sehingga tidak memiliki data label eksplisit untuk relevansi item.
+
+Oleh karena itu, digunakan metrik **Pseudo Precision@K** sebagai pendekatan evaluasi:
+
+- Dihitung berdasarkan jumlah item yang memiliki cosine similarity ≥ 0.95 terhadap item referensi
+- Untuk contoh pengguna index ke-10, **Pseudo Precision@5 = 1.0000** menunjukkan bahwa seluruh item rekomendasi sangat mirip.
+
+Metrik seperti Precision@K, Recall@K, dan F1@K tidak digunakan karena dataset tidak mengandung ground truth berupa *user-item relevance label*.
+
+**Evaluasi terhadap business goals:**
+- Sistem berhasil membantu pengguna menemukan produk serupa, menjawab problem statement utama.
+- Rekomendasi konsisten dan bisa diandalkan, cocok untuk pengguna yang mencari produk dengan spesifikasi yang familiar atau mirip.
+
 
 **---Ini adalah bagian akhir laporan---**
