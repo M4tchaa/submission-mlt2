@@ -5,7 +5,7 @@
 
 # ### Load Library
 
-# In[1]:
+# In[22]:
 
 
 import pandas as pd
@@ -20,7 +20,7 @@ import pickle
 
 # ## Data Exploration ##
 
-# In[2]:
+# In[23]:
 
 
 df = pd.read_csv('laptops.csv')
@@ -34,7 +34,7 @@ df.head()
 # - RAM, Storage, Storage type, Screen, Touch: komponen teknis
 # - Final Price: Harga akhir laptop.
 
-# In[3]:
+# In[24]:
 
 
 df.info()
@@ -46,7 +46,7 @@ df.info()
 # - Jumlah kolom: 12 fitur.
 # - terdapat beberapa kolom yang kosong, dan perlu penyesuaian di proses cleaning nantinya
 
-# In[4]:
+# In[25]:
 
 
 df.describe()
@@ -58,7 +58,7 @@ df.describe()
 # - Ukuran layar (screen) dominan di sekitar 15.6 inci
 # - Harga laptop bervariasi cukup lebar, mulai dari sekitar $201 hingga $7150
 
-# In[5]:
+# In[26]:
 
 
 df.isnull().sum()
@@ -69,7 +69,7 @@ df.isnull().sum()
 # - GPU: 1371 missing value
 # - Screen: 4 missing value
 
-# In[6]:
+# In[27]:
 
 
 plt.figure(figsize=(8,5))
@@ -82,7 +82,7 @@ plt.show()
 
 # Dapat kita perhatikan, sebaran harga laptop paling banyak di harga $500 - $1500
 
-# In[7]:
+# In[28]:
 
 
 plt.figure(figsize=(8,5))
@@ -96,7 +96,7 @@ plt.show()
 
 # ## Data Cleaning ##
 
-# In[8]:
+# In[29]:
 
 
 df = df.drop(columns=['Laptop', 'Status'])
@@ -104,7 +104,7 @@ df = df.drop(columns=['Laptop', 'Status'])
 
 # Drop kolom Laptop dan status karena tidak berkaitan denan model nantinya
 
-# In[9]:
+# In[30]:
 
 
 df['Storage type'].fillna(df['Storage type'].mode()[0], inplace=True)
@@ -112,7 +112,7 @@ df['Storage type'].fillna(df['Storage type'].mode()[0], inplace=True)
 
 # Isi storage Type dengan mode, untuk mengatasi missing value. Metode ini dipilih karena missing value tidak terlalu banyak dan tipe gpu tidak terlalu banyak berdampak besar pada seharusnya pada model
 
-# In[10]:
+# In[31]:
 
 
 df['GPU'].fillna('Unknown', inplace=True)
@@ -120,7 +120,7 @@ df['GPU'].fillna('Unknown', inplace=True)
 
 # Untuk GPU, missing value kita isi dengan 'unknown'. Bisa juga diisi dengan Integrated, tapi karena value awalnya memang kosong jadi lebih aman saya isi dengan unknown.
 
-# In[11]:
+# In[32]:
 
 
 df['Screen'].fillna(df['Screen'].median(), inplace=True)
@@ -128,7 +128,7 @@ df['Screen'].fillna(df['Screen'].median(), inplace=True)
 
 # ## Data Preparation ##
 
-# In[12]:
+# In[33]:
 
 
 categorical_cols = ['Brand', 'Model', 'CPU', 'Storage type', 'GPU', 'Touch']
@@ -142,7 +142,7 @@ for col in categorical_cols:
 
 # Fitur kategorikal seperti Brand, Model, CPU, Storage type, GPU, dan Touch tidak dapat langsung digunakan dalam bentuk string. Oleh karena itu, diterapkan proses encoding menggunakan 'Label Encoding' untuk mengubah nilai string menjadi numerik.
 
-# In[13]:
+# In[34]:
 
 
 # Scaling numerik
@@ -153,7 +153,7 @@ df[numerical_cols] = scaler.fit_transform(df[numerical_cols])
 
 # Beberapa fitur numerik memiliki skala yang sangat bervariasi (misalnya: RAM, Storage, dan Final Price). Untuk menyamakan skala dan menghindari dominasi fitur tertentu pada perhitungan similarity, diterapkan 'Standard Scaler' sehingga setiap fitur memiliki mean = 0 dan standar deviasi = 1.
 
-# In[14]:
+# In[35]:
 
 
 print(df.head())
@@ -166,7 +166,7 @@ print(df.describe())
 # - Semua data siap diproses ke tahap modeling
 # - Tidak ada lagi missing value setelah tahap data cleaning sebelumnya.
 
-# In[15]:
+# In[36]:
 
 
 # Siapkan fitur untuk similarity
@@ -178,14 +178,14 @@ features = df[feature_cols].values
 
 # ### Content Based Filtering ###
 
-# In[16]:
+# In[37]:
 
 
 # Hitung cosine similarity
 similarity = cosine_similarity(features)
 
 
-# In[17]:
+# In[38]:
 
 
 # Fungsi rekomendasi
@@ -197,35 +197,41 @@ def recommend(index, top_n=5):
     return df.iloc[indices]
 
 
-# In[18]:
+# In[39]:
 
 
 print("Top-5 rekomendasi untuk data ke-10 (Content-Based Filtering):")
 recommend(10)
 
 
+# In[40]:
+
+
+def pseudo_precision_at_k(recommendations, target_index, top_k=5):
+    target = features[target_index]
+    total = 0
+    for idx in recommendations:
+        sim = cosine_similarity([features[idx]], [target])[0][0]
+        if sim >= 0.95:
+            total += 1
+    return total / top_k
+
+
 # In[ ]:
 
 
-def evaluate_mean_similarity(index, top_n=5):
-    score = list(enumerate(similarity[index]))
-    score = sorted(score, key=lambda x: x[1], reverse=True)
-    score = score[1:top_n+1] #di +1 karena dikecualikan index yg dijadikan percobaan
-    similarities = [x[1] for x in score]
-    return sum(similarities) / top_n
+# sample hasil evaluasi
+top_n = 5
+recommendations = recommend(10, top_n=top_n).index.tolist()
 
-
-# In[21]:
-
-
-score_mean_cosine = evaluate_mean_similarity(10, top_n=5)
-print(f"Mean Cosine Similarity untuk index yg dipilih: {score_mean_cosine:.4f}")
+score_precision = pseudo_precision_at_k(recommendations, target_index=10, top_k=top_n)
+print(f"Pseudo Precision@{top_n} untuk index ke-10: {score_precision:.4f}")
 
 
 # Semua rekomendasi memiliki kesamaan penuh (cosine similarity = 1) terhadap item acuan — artinya vektor fitur mereka identik setelah proses normalisasi.
 # 
 # Ini terjadi kemungkinan karena fitur utama seperti Brand, Model, CPU, GPU, Storage type, dan Screen identik, dan hanya RAM, Storage, atau Final Price yang sedikit berbeda — yang tidak cukup besar untuk menurunkan similarity.
 
-# Berdasarkan perhitungan Mean Cosine Similarity, sistem menghasilkan skor 1.0000 untuk data ke-10. Ini menunjukkan bahwa seluruh item yang direkomendasikan sangat mirip secara fitur dengan item tersebut. Rekomendasi ini relevan untuk pendekatan Content-Based Filtering yang mengandalkan kemiripan antar item satu sama lainny.
+# Hasil ini menunjukkan bahwa model Content-Based Filtering berhasil menyarankan produk-produk dengan spesifikasi teknis yang sangat mirip, dan cocok untuk konteks pengguna yang mencari alternatif laptop sejenis
 
 # 
