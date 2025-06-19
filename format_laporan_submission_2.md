@@ -56,12 +56,14 @@ Visualisasi sederhana dilakukan untuk melihat sebaran data:
 
 - **Distribusi Harga:** mayoritas produk berada pada harga menengah, terdapat outlier harga sangat tinggi.
 ![Distribusi Harga](images/EDA1.png)
-note* Jika gambar tidak muncul, [lihat di sini](https://drive.google.com/file/d/1_J_yEJ5cvRj7f9eEMX8ZJTPdkYc6dbNG/view?usp=sharing)
+
+Jika gambar tidak muncul, [lihat di sini](https://drive.google.com/file/d/1_J_yEJ5cvRj7f9eEMX8ZJTPdkYc6dbNG/view?usp=sharing)
 
 - **Distribusi RAM:** sebagian besar laptop berada pada rentang RAM standar (8GB - 16GB), dengan sedikit outlier di kapasitas RAM yang tinggi.
 
 ![Distribusi Harga](images/EDA2.png)
-note* Jika gambar tidak muncul, [lihat di sini](https://drive.google.com/file/d/1RCs9avFWDgEGDx_JayJzLTRrJvvOiL_N/view?usp=sharing)
+
+Jika gambar tidak muncul, [lihat di sini](https://drive.google.com/file/d/1RCs9avFWDgEGDx_JayJzLTRrJvvOiL_N/view?usp=sharing)
 
 ## Data Preparation
 Beberapa tahapan preparation yang dilakukan:
@@ -89,7 +91,8 @@ Metode yang digunakan adalah **Content-Based Filtering** dengan perhitungan cosi
 - Untuk setiap index data, sistem merekomendasikan Top-N (misalnya 5) laptop yang paling mirip (selain dirinya sendiri).
 
 ![Output Rekomendasi (contoh data index ke-10)](images/topN.png)
-note* Jika gambar tidak muncul, [lihat di sini](https://drive.google.com/file/d/17hRHG-0SMnQDtjGRLnxrOBl2rwgHObqy/view?usp=sharing)
+
+Jika gambar tidak muncul, [lihat di sini](https://drive.google.com/file/d/17hRHG-0SMnQDtjGRLnxrOBl2rwgHObqy/view?usp=sharing)
 
 
 ## Evaluation
