@@ -55,11 +55,13 @@ Dataset yang digunakan berasal dari https://www.kaggle.com/datasets/juanmerinobe
 Visualisasi sederhana dilakukan untuk melihat sebaran data:
 
 - **Distribusi Harga:** mayoritas produk berada pada harga menengah, terdapat outlier harga sangat tinggi.
-![Distribusi Harga](https://github.com/M4tchaa/submission-mlt2/blob/main/EDA1.png)
+![Distribusi Harga](images/EDA1.png)
+note* Jika gambar tidak muncul, [lihat di sini](https://drive.google.com/file/d/1_J_yEJ5cvRj7f9eEMX8ZJTPdkYc6dbNG/view?usp=sharing)
 
 - **Distribusi RAM:** sebagian besar laptop berada pada rentang RAM standar (8GB - 16GB), dengan sedikit outlier di kapasitas RAM yang tinggi.
 
-![Distribusi Harga](https://github.com/M4tchaa/submission-mlt2/blob/main/EDA2.png)
+![Distribusi Harga](images/EDA2.png)
+note* Jika gambar tidak muncul, [lihat di sini](https://drive.google.com/file/d/1RCs9avFWDgEGDx_JayJzLTRrJvvOiL_N/view?usp=sharing)
 
 ## Data Preparation
 Beberapa tahapan preparation yang dilakukan:
@@ -86,16 +88,16 @@ Metode yang digunakan adalah **Content-Based Filtering** dengan perhitungan cosi
 - Menghitung cosine similarity antar laptop.
 - Untuk setiap index data, sistem merekomendasikan Top-N (misalnya 5) laptop yang paling mirip (selain dirinya sendiri).
 
-![Output Rekomendasi (contoh data index ke-10)](https://github.com/M4tchaa/submission-mlt2/blob/main/topN.png)
+![Output Rekomendasi (contoh data index ke-10)](images/topN.png)
+note* Jika gambar tidak muncul, [lihat di sini](https://drive.google.com/file/d/17hRHG-0SMnQDtjGRLnxrOBl2rwgHObqy/view?usp=sharing)
 
 
 ## Evaluation
-Metrik yang digunakan adalah **Mean Cosine Similarity**, yaitu rata-rata kemiripan antara produk referensi dan produk-produk yang direkomendasikan berdasarkan representasi fitur.
+Metrik yang digunakan adalah **Pseudo Precision@5**, Mengukur seberapa banyak item rekomendasi yang benar-benar sangat mirip dengan item referensi.  
+Dihitung dengan item referensi (nilai cosine similarity ≥ 0.95) dan Hasil (index ke-10): **1.0000**
 
-Cosine similarity mengukur sudut antara dua vektor, dengan nilai 1 menunjukkan kemiripan sempurna, dan 0 berarti tidak ada kemiripan.
-
-Untuk contoh data laptop ke-10, **mean cosine similarity** antara laptop referensi dan lima rekomendasi teratas adalah **1.0000**. Hal ini menunjukkan bahwa sistem berhasil menemukan produk-produk dengan kemiripan fitur yang sangat tinggi.
-
-Metrik ini digunakan karena pendekatan yang digunakan tidak melibatkan data historis pengguna, sehingga evaluasi dilakukan berdasarkan kesamaan representasi fitur
+Hal ini menunjukkan bahwa:
+- Sistem berhasil menjawab problem statement pertama: **membantu pengguna menemukan laptop sesuai spesifikasi.**
+- Sistem juga sesuai dengan goals, yaitu **menyusun model content-based yang efisien dan akurat** dalam menyarankan laptop sejenis.
 
 **---Ini adalah bagian akhir laporan---**
